@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <link rel="stylesheet" type="text/css" href="css/storage_classify.css" />
+    <link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+    <link rel="stylesheet" type="text/css" href="./css/lui.css" />
+    <link rel="stylesheet" type="text/css" href="css/swiper.css" />
+    <link rel="stylesheet" href="./css/vido_chat.css">
+    <script src="./js/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="../js/config.js?t=45844585455444"></script>
+    <title>视频空间</title>
+    <style type="text/css">
+    .input-container textarea {
+        overflow-y: hidden;
+    }
+
+    .video_container {
+        height: 4rem;
+    }
+
+    .video_container>.swiper-wrapper {
+        height: 4rem;
+    }
+
+    .video_container>.swiper-wrapper>.swiper-slide {
+        height: 4rem;
+    }
+
+    .video_container>.swiper-wrapper>.swiper-slide>video {
+        height: 4rem;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container col x-start ">
+        <div class="lui-nav row x-between y-center">
+            <div class="block row x-center y-center nav-back">
+                <img src="./image/back.png" alt="">
+            </div>
+            <p class="page-title">
+            </p>
+            <div class="block"></div>
+        </div>
+        <div class="swiper-container video_container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <video class="contr" webkit-playsinline="true" playsinline="true" x5-playsinline src="">
+                    </video>
+                    <div class="video_contr"></div>
+                </div>
+            </div>
+        </div>
+        <!-- 点赞 -->
+        <div class="zan-container">
+            <div type="button"><span class="sign"></span>
+                <font style="font-size: 0.26rem;line-height: 0.3rem;color: #bfbfbf;">0</font>
+            </div>
+            <div type="button"><span class="zan"></span>
+                <font style="font-size: 0.26rem;line-height: 0.3rem;color: #bfbfbf;">0
+                </font>
+            </div>
+        </div>
+        <!-- 标题 -->
+        <div class="container-title">
+            <span></span>
+            <font>视频</font>
+        </div>
+        <!-- 视频选集 -->
+        <div class="swiper-container1">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide"> 1</div>
+            </div>
+        </div>
+        <!-- 按钮 -->
+        <!-- div class="btn-container">
+                <div class=" btn game" onclick="javascript:window.location.href='./dynamic/menu.html'">互动游戏</div>
+                <div class=" btn shop" onclick="to_shop()">本印商城</div>
+            </div> -->
+        <div class="chat-container">
+        </div>
+        <div class="input-container">
+            <textarea class="send_content" type="" placeholder="嘿!你有空吗?" name="" id="" value=""></textarea>
+            <span class="send_msg">发送</span>
+        </div>
+    </div>
+</body>
+<script>
+document.write('<script src="../js/config.js?timestamp=' + new Date().getTime() + '"><\/script>')
+</script>
+<script>
+document.write('<script src="./js/app.js?timestamp=' + new Date().getTime() + '"><\/script>')
+document.write('<script src="./js/swiper.js?timestamp=' + new Date().getTime() + '"><\/script>')
+document.write('<script src="./js/video.js?timestamp=' + new Date().getTime() + '"><\/script>')
+document.write('<script src="./js/mui.min.js?timestamp=' + new Date().getTime() + '"><\/script>')
+</script>
+<!-- <script type="text/javascript" src="./js/app.js?timestamp='+ new Date().getTime()+'"></script> -->
+<!-- <script src="js/swiper.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/javascript" src="js/video.js"></script>
+    <script type="text/javascript" src="js/mui.min.js"></script> -->
+<script type="text/javascript">
+history.pushState(null, null, document.URL);
+window.addEventListener('popstate', function() {
+    config.replaceUrl("video_home.html");
+});
+$(() => {
+
+    mySwiper.slideTo(0);
+    swiper1.slideTo(0);
+    changeEpisode(1);
+    var mmh = window.innerHeight - $(".btn-container").height() - $(".swiper-container1").height() - $(".container-title").height() - $(".zan-container").height() - $(".swiper-container").height();
+    console.log(mmh);
+    $(".chat-container").css("height", mmh - 2 * 50 * window.innerWidth / 375 + 'px');
+    config.video.getChatMsg();
+
+    // $(".video_contr").css
+    // addVideoContr('.swiper-wrapper .swiper-slide',1,'url(image/zan.png)');
+    // 接受视频页信息
+})
+//封装获取文件
+
+
+function to_shop() {
+    mui.toast('服务器繁忙', {
+        duration: 'long',
+        type: 'div'
+    });
+}
+var mySwiper = new Swiper('.swiper-container', {
+    autoplay: false,
+    loop: false, //可选选项，自动滑动
+    on: {
+        // 滑动改变下面的选项
+        slideChangeTransitionStart: function() {
+
+            changeEpisode(this.activeIndex + 1);
+            swiper1.slideTo(this.activeIndex);
+            $(".swiper-wrapper .swiper-slide video").trigger("pause");
+            $(".swiper-wrapper .swiper-slide").removeClass("play").addClass("pause");
+        }
+    }
+})
+
+// 点赞
+$("span.zan").on("click", function() {
+    config.video.sendLikes((data) => {
+        changezan(data.boolean);
+    })
+})
+//点赞状态
+function changezan(boo) {
+    var now_zan_count = $("span.zan").next("font").html()
+    if (boo) {
+        $("span.zan").addClass("act");
+        $("span.zan").next("font").html(parseInt(now_zan_count) + 1);
+        config.showToast("谢谢您的支持", 'middle', 1000)
+    } else {
+        $("span.zan").removeClass("act");
+        $("span.zan").next("font").html(parseInt(now_zan_count) - 1);
+        config.showToast("您已取消点赞", 'middle', 1000)
+    }
+}
+
+function changeEpisode(num) {
+
+    $(".swiper-container1 .swiper-slide").removeClass("active");
+    var allEp = $(".swiper-container1 .swiper-slide");
+    for (var x of allEp) {
+
+        if (parseInt($(x).text()) == num) {
+            $(x).addClass("active");
+        }
+
+    }
+}
+
+$("textarea").bind('input propertychange', function() {
+    var hei = this.scrollHeight;
+
+    if ($(this).val().length > 0) {
+        $(".input-container span").css("background", '#2780e6');
+    } else {
+        $(".input-container span").css("background", '#8cbcf3');
+    }
+    var fontS = $(".input-container .send_content").css("font-size");
+    var padS = $(".input-container .send_content").css("padding");
+    fontS = parseInt(fontS);
+    padS = parseInt(padS);
+    console.log(hei);
+
+    if (hei < fontS + 2 * padS + 15) {
+
+        $(this).css("height", fontS + 2 * padS + 10 + "px");
+    } else if (hei < fontS * 2 + 2 * padS + 15) {
+        $(this).css("height", fontS * 2 + 2 * padS + 10 + "px");
+
+    } else if (hei < fontS * 3 + 2 * padS + 15) {
+        $(this).css("height", fontS * 3 + 2 * padS + 10 + "px");
+    } else {
+        $(this).css("height", fontS * 3 + 2 * padS + 10 + "px");
+    }
+
+});
+
+
+
+//如果你初始化时没有定义Swiper实例，后面也可以通过Swiper的HTML元素来获取该实例
+new Swiper('.swiper-container')
+var mySwiper = document.querySelector('.swiper-container').swiper
+mySwiper.slideNext();
+
+var swiper1 = new Swiper('.swiper-container1', {
+    slidesPerView: 5,
+    spaceBetween: 20,
+    freeMode: true,
+    pagination: {
+        el: '.swiper-pagination',
+        clickable: true,
+    },
+});
+// 
+$(".swiper-container1 .swiper-slide").on("click", (e) => {
+    console.log(parseInt($(e.target).text()) - 1);
+    $(".swiper-container1 .swiper-slide").removeClass("active");
+    $(e.currentTarget).addClass("active");
+    mySwiper.slideTo(parseInt($(e.target).text()) - 1, 1000, false); //切换到第一个slide，速度为1秒
+})
+// 发送消息  需要封装
+$(".send_msg").on("click", () => {
+    var msg = $(".send_content").val();
+    if (msg.length > 0) {
+        config.video.sendChatMsg(msg, () => {
+            $(".send_content").val('');
+            $(".send_content").css('height', '0.58rem');
+            config.showToast("消息发送成功", "middle", 2000)
+            config.video.getChatMsg();
+        })
+    } else {
+        config.showToast("您不能发送空消息", "middle", 2000)
+    }
+    console.log();
+})
+</script>
+
+</html>
